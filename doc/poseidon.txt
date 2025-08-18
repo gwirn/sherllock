@@ -1,0 +1,25 @@
+================================================================================
+                                                                     *sherllock*
+
+This plugin helps in formatting and checking of shell scripts without the
+need for an LSP but still indicating errors and also putting them into
+a quickfix list for easy navigation. Everything happens with autocmd on
+`BufWritePost` and `InsertLeave`.
+
+Example:
+
+                                                        *sherllock.check()*
+sherllock.check()
+    Checks your shell script with `shellcheck` for errors, warnings and infos.
+    It will open a quickfix list if there are any errors, warnings or infos
+    for easy navigation and close the quickfix list if the file is closed.
+    They will also be indicated in the sign column.
+
+                                                        *sherllock.check()*
+
+sherllock.format()
+    Formats the current buffer using `shfmt`. Make sure to run |sherllock.check|
+    before so that there are no errors since the output of shfmt will be
+    writen to the current buffer.
+
+vim:tw=78:ts=8:ft=help:norl:
