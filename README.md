@@ -12,4 +12,18 @@ This plugin helps in formatting and checking of shell scripts without the need f
 
 Relies on `shellcheck` and `shfmt` to work.
 
+## Setup
+
+```lua
+return {
+    {
+        "gwirn/sherllock",
+        config = function()
+            require("sherllock").setup()
+        end,
+    }
+}
+```
+
+
 ### Tested on NVIM v0.11.3
