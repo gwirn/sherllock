@@ -12,7 +12,7 @@ This plugin helps in formatting and checking of shell scripts without the need f
 
 Relies on `shellcheck` and `shfmt` to work.
 
-## Setup
+## Setup with LazyVim
 
 ```lua
 return {
