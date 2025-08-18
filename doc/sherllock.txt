@@ -15,7 +15,7 @@ sherllock.check()
     for easy navigation and close the quickfix list if the file is closed.
     They will also be indicated in the sign column.
 
-                                                        *sherllock.check()*
+                                                        *sherllock.format()*
 
 sherllock.format()
     Formats the current buffer using `shfmt`. Make sure to run |sherllock.check|
