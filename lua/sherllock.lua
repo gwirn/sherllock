@@ -70,42 +70,6 @@ local function shellcheck_on_buf(buf_num)
     return output
 end
 
-
-
-vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = "*.sh",
-    callback = function()
-        local bufnr = vim.api.nvim_get_current_buf()
-        local output = shellcheck_on_buf(bufnr)
-        qf_list = parse_shellcheck(output, bufnr)
-        if vim.v.shell_error ~= 0 then
-            vim.fn.setqflist(qf_list, 'r')
-            vim.cmd.copen()
-        else
-            vim.fn.setqflist({}, 'r')
-            vim.cmd.cclose()
-            shfmt_on_buf(bufnr)
-        end
-    end,
-})
-
-vim.api.nvim_create_autocmd({ "InsertLeave" }, {
-    pattern = "*.sh",
-    callback = function()
-        local bufnr = vim.api.nvim_get_current_buf()
-        local output = shellcheck_on_buf(bufnr)
-        qf_list = parse_shellcheck(output, bufnr)
-        update_sign(qf_list, bufnr)
-    end,
-})
-
-vim.api.nvim_create_autocmd("QuitPre", {
-    pattern = "*.sh",
-    callback = function()
-        vim.cmd.cclose()
-    end
-})
-
 local M = {}
 M.check = function()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -114,6 +78,41 @@ end
 M.format = function()
     local bufnr = vim.api.nvim_get_current_buf()
     shfmt_on_buf(bufnr)
+end
+M.setup = function()
+    vim.api.nvim_create_autocmd("BufWritePost", {
+        pattern = "*.sh",
+        callback = function()
+            local bufnr = vim.api.nvim_get_current_buf()
+            local output = shellcheck_on_buf(bufnr)
+            qf_list = parse_shellcheck(output, bufnr)
+            if vim.v.shell_error ~= 0 then
+                vim.fn.setqflist(qf_list, 'r')
+                vim.cmd.copen()
+            else
+                vim.fn.setqflist({}, 'r')
+                vim.cmd.cclose()
+                shfmt_on_buf(bufnr)
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+        pattern = "*.sh",
+        callback = function()
+            local bufnr = vim.api.nvim_get_current_buf()
+            local output = shellcheck_on_buf(bufnr)
+            qf_list = parse_shellcheck(output, bufnr)
+            update_sign(qf_list, bufnr)
+        end,
+    })
+
+    vim.api.nvim_create_autocmd("QuitPre", {
+        pattern = "*.sh",
+        callback = function()
+            vim.cmd.cclose()
+        end
+    })
 end
 
 return M
