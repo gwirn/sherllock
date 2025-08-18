@@ -1,6 +1,6 @@
 # She(r)llock 🔍
 
-*Shell script check and format without LSP*
+*Shell script checking and formatting without LSP*
 
 ## Documentation
 
