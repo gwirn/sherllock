@@ -128,7 +128,7 @@ M.setup = function()
             vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
             if #table ~= 0 then
                 for _, elem in ipairs(qf_list) do
-                    highlight_error(elem.lnum - 1, elem.col, bufnr)
+                    highlight_error(elem.lnum - 1, elem.col - 1, bufnr)
                 end
             end
         end,
