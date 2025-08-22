@@ -14,7 +14,6 @@ vim.api.nvim_set_hl(0, "SherllockHL", {
     underline = true,
     sp = "#00ff00",
 })
-local ns_id = vim.api.nvim_create_namespace("SherllockErrorUnderline")
 
 
 vim.fn.sign_define("BashErrorSign", { text = "E>", texthl = "BashErrorSignHL", numhl = "BashErrorSignHL" })
@@ -48,7 +47,7 @@ local function highlight_error(row, col, bufnr)
     if not node then return nil end
 
     local text_len = vim.treesitter.get_node_text(node, bufnr):len()
-    vim.api.nvim_buf_set_extmark(bufnr, vim.api.nvim_create_namespace("my_ns"), row, col, {
+    vim.api.nvim_buf_set_extmark(bufnr, vim.api.nvim_create_namespace("SherllockErrorUnderline"), row, col, {
         end_col = col + text_len,
         hl_group = "SherllockHL",
     })
@@ -125,6 +124,7 @@ M.setup = function()
             local output = shellcheck_on_buf(bufnr)
             local qf_list = parse_shellcheck(output, bufnr)
             update_sign(qf_list, bufnr)
+            local ns_id = vim.api.nvim_create_namespace("SherllockErrorUnderline")
             vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
             if #table ~= 0 then
                 for _, elem in ipairs(qf_list) do
