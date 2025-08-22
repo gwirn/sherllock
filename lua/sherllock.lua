@@ -10,6 +10,12 @@ vim.api.nvim_set_hl(0, "BashInfoSignHL", {
     fg = "#a6a2a3",
     bg = "NONE",
 })
+vim.api.nvim_set_hl(0, "SherllockHL", {
+    underline = true,
+    sp = "#00ff00",
+})
+local ns_id = vim.api.nvim_create_namespace("SherllockErrorUnderline")
+
 
 vim.fn.sign_define("BashErrorSign", { text = "E>", texthl = "BashErrorSignHL", numhl = "BashErrorSignHL" })
 vim.fn.sign_define("BashWarningSign", { text = "W>", texthl = "BashWarningSignHL", numhl = "BashWarningSignHL" })
@@ -31,6 +37,21 @@ local function update_sign(qf_list, buf_num)
             end
         end
     end
+end
+
+local function highlight_error(row, col, bufnr)
+    local parser = vim.treesitter.get_parser(bufnr)
+    local tree = parser:parse()[1]
+    local root = tree:root()
+
+    local node = root:descendant_for_range(row, col, row, col)
+    if not node then return nil end
+
+    local text_len = vim.treesitter.get_node_text(node, bufnr):len()
+    vim.api.nvim_buf_set_extmark(bufnr, vim.api.nvim_create_namespace("my_ns"), row, col, {
+        end_col = col + text_len,
+        hl_group = "SherllockHL",
+    })
 end
 
 local function parse_shellcheck(output, buf_num)
@@ -85,7 +106,7 @@ M.setup = function()
         callback = function()
             local bufnr = vim.api.nvim_get_current_buf()
             local output = shellcheck_on_buf(bufnr)
-            qf_list = parse_shellcheck(output, bufnr)
+            local qf_list = parse_shellcheck(output, bufnr)
             if vim.v.shell_error ~= 0 then
                 vim.fn.setqflist(qf_list, 'r')
                 vim.cmd.copen()
@@ -102,8 +123,14 @@ M.setup = function()
         callback = function()
             local bufnr = vim.api.nvim_get_current_buf()
             local output = shellcheck_on_buf(bufnr)
-            qf_list = parse_shellcheck(output, bufnr)
+            local qf_list = parse_shellcheck(output, bufnr)
             update_sign(qf_list, bufnr)
+            vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+            if #table ~= 0 then
+                for _, elem in ipairs(qf_list) do
+                    highlight_error(elem.lnum - 1, elem.col, bufnr)
+                end
+            end
         end,
     })
 
