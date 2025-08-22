@@ -11,8 +11,8 @@ vim.api.nvim_set_hl(0, "BashInfoSignHL", {
     bg = "NONE",
 })
 vim.api.nvim_set_hl(0, "SherllockHL", {
-    underline = true,
-    sp = "#00ff00",
+    undercurl = true,
+    sp = "#f57d05",
 })
 
 
@@ -126,10 +126,8 @@ M.setup = function()
             update_sign(qf_list, bufnr)
             local ns_id = vim.api.nvim_create_namespace("SherllockErrorUnderline")
             vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-            if #table ~= 0 then
-                for _, elem in ipairs(qf_list) do
-                    highlight_error(elem.lnum - 1, elem.col - 1, bufnr)
-                end
+            for _, elem in ipairs(qf_list) do
+                highlight_error(elem.lnum - 1, elem.col - 1, bufnr)
             end
         end,
     })
