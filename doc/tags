@@ -1,0 +1,3 @@
+sherllock	sherllock.txt	/*sherllock*
+sherllock.check()	sherllock.txt	/*sherllock.check()*
+sherllock.format()	sherllock.txt	/*sherllock.format()*

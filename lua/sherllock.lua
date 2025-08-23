@@ -126,8 +126,10 @@ M.setup = function()
             update_sign(qf_list, bufnr)
             local ns_id = vim.api.nvim_create_namespace("SherllockErrorUnderline")
             vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-            for _, elem in ipairs(qf_list) do
-                highlight_error(elem.lnum - 1, elem.col - 1, bufnr)
+            if qf_list then
+                for _, elem in ipairs(qf_list) do
+                    highlight_error(elem.lnum - 1, elem.col - 1, bufnr)
+                end
             end
         end,
     })
