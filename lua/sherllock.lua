@@ -38,17 +38,21 @@ local function update_sign(qf_list, buf_num)
     end
 end
 
-local function highlight_error(row, col, bufnr)
-    local parser = vim.treesitter.get_parser(bufnr)
-    local tree = parser:parse()[1]
-    local root = tree:root()
+local function highlight_error(line, col, bufnr, ns)
+    local text = vim.api.nvim_buf_get_lines(bufnr, line, line + 1, false)[1]
+    local text_len = text:len()
+    local start_str = string.sub(text, col, text_len)
+    local end_pos = string.find(start_str, " ")
+    local sign_len = text_len
+    if not end_pos == nil then
+        sign_len = col + end_pos + 1
+        if sign_len > text_len then
+            sign_len = text_len
+        end
+    end
 
-    local node = root:descendant_for_range(row, col, row, col)
-    if not node then return nil end
-
-    local text_len = vim.treesitter.get_node_text(node, bufnr):len()
-    vim.api.nvim_buf_set_extmark(bufnr, vim.api.nvim_create_namespace("SherllockErrorUnderline"), row, col, {
-        end_col = col + text_len,
+    vim.api.nvim_buf_set_extmark(bufnr, ns, line, col, {
+        end_col = sign_len,
         hl_group = "SherllockHL",
     })
 end
@@ -128,7 +132,7 @@ M.setup = function()
             vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
             if qf_list then
                 for _, elem in ipairs(qf_list) do
-                    highlight_error(elem.lnum - 1, elem.col - 1, bufnr)
+                    highlight_error(elem.lnum - 1, elem.col - 1, bufnr, ns_id)
                 end
             end
         end,
@@ -142,4 +146,4 @@ M.setup = function()
     })
 end
 
-return M
+M.setup()
