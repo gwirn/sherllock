@@ -89,6 +89,7 @@ local function shellcheck_on_buf(buf_num)
     local output = vim.fn.systemlist({
         "shellcheck",
         "--format=gcc",
+        "-x",
         "-",
     }, content)
     return output
